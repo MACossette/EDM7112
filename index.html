@@ -36,6 +36,9 @@
             
             var camera, scene, renderer;
 			var pointLight, pointLight2, pointLight3, pointLight4, pointLight5;
+            var bloc = [];
+            var bloc2 = [];
+            var bloc3 = [];
             
             init();
             animate();
@@ -89,55 +92,57 @@
 				room.receiveShadow = true;
 				scene.add( room );
                 
-                //add cube center
-                var shapeGeo = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
-				var shapeMat = new THREE.MeshPhongMaterial( {
+                //create black blocs
+                function createBloc() {
+                    var shapeGeo = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
+				    var shapeMat = new THREE.MeshPhongMaterial( {
 					color: 0x000000,
 					shininess: 5,
 					specular: 0x111111,
-				} )
+				    } )
+                    var shape = new THREE.Mesh( shapeGeo, shapeMat );
+                    shape.receiveShadow = true;
+                    shape.castShadow = true;
+                    
+                    return shape
+                }
+            
                 
                 for ( var i = 0; i < 40; i ++ ) {
-                    //baton verticaux
-				    var shape = new THREE.Mesh( shapeGeo, shapeMat );
-				    var scaleY = Math.random() * 30
+                    
+                    bloc[i]= createBloc();
+                    var scaleY = Math.random() * 30
                     var posZ1 = Math.random() * 60 - 30;
-                    shape.position.y = scaleY/4;
-                    shape.position.x = Math.random() * 50 - 25;
-                    shape.position.z = posZ1;
-                    shape.scale.x = Math.random() * 2 + 0.5;
-                    shape.scale.y = scaleY;
-                    shape.scale.z = Math.random() * 2 + 0.5;
-				    shape.receiveShadow = true;
-                    shape.castShadow = true;
-				    scene.add( shape );
-                    //baton axe Z
-                    var shape2 = new THREE.Mesh( shapeGeo, shapeMat );
-				    var scaleZ = Math.random() * 25;
+                    bloc[i].position.y = scaleY/4;
+                    bloc[i].position.x = Math.random() * 50 - 25;
+                    bloc[i].position.z = posZ1;
+                    bloc[i].scale.x = Math.random() * 2 + 0.5;
+                    bloc[i].scale.y = scaleY;
+                    bloc[i].scale.z = Math.random() * 2 + 0.5;
+                    scene.add(bloc[i]);
+                    
+                    bloc2[i]= createBloc();
+                    var scaleZ = Math.random() * 25;
                     var scaleY2 = Math.random() * 10;
                     var posX2 = Math.random() * 50 - 25;
-                    shape2.position.y = 0;
-                    shape2.position.x = posX2;
-                    shape2.position.z = posZ1;
-                    shape2.scale.x = Math.random() * 3 + 0.5;
-                    shape2.scale.y = scaleY2/4;
-                    shape2.scale.z = scaleZ;
-				    shape2.receiveShadow = true;
-                    shape2.castShadow = true;
-				    scene.add( shape2 );
-                    //baton axe Y
-                    var shape3 = new THREE.Mesh( shapeGeo, shapeMat );
-				    var scaleX = Math.random() * 25;
+                    bloc2[i].position.y = 0;
+                    bloc2[i].position.x = posX2;
+                    bloc2[i].position.z = posZ1;
+                    bloc2[i].scale.x = Math.random() * 3 + 0.5;
+                    bloc2[i].scale.y = scaleY2/4;
+                    bloc2[i].scale.z = scaleZ;
+                    scene.add(bloc2[i]);
+                    
+                    bloc3[i]= createBloc();
+                    var scaleX = Math.random() * 25;
                     var scaleY3 = Math.random() * 10;
-                    shape3.position.y = 0;
-                    shape3.position.x = posX2+scaleZ;
-                    shape3.position.z = Math.random() * 60 - 30;
-                    shape3.scale.x = scaleX;
-                    shape3.scale.y = scaleY3/4;
-                    shape3.scale.z = Math.random() * 3 + 0.5;
-				    shape3.receiveShadow = true;
-                    shape3.castShadow = true;
-				    scene.add( shape3 );
+                    bloc3[i].position.y = 0;
+                    bloc3[i].position.x = posX2+scaleZ;
+                    bloc3[i].position.z = Math.random() * 60 - 30;
+                    bloc3[i].scale.x = scaleX;
+                    bloc3[i].scale.y = scaleY3/4;
+                    bloc3[i].scale.z = Math.random() * 3 + 0.5;
+                    scene.add(bloc3[i]);
                 }
                 
                 //renderer
@@ -170,6 +175,8 @@
 			function animate() {
 
 				requestAnimationFrame( animate );
+
+
 				render();
 
 			}
@@ -179,6 +186,7 @@
             function render() {
 
 				var time = performance.now() * 0.0005;
+                var clock = Date.now();
                 
                 pointLight.position.x = Math.cos( time * 1.0 ) * 9;;
 				pointLight.position.y = Math.sin( time * 1.1 ) * 9 + 10;;
@@ -199,9 +207,42 @@
                 pointLight5.position.x = Math.cos( time * 1.4 ) * 9;;
 				pointLight5.position.y = Math.sin( time * 1.6 ) * 9 + 10;;
 				pointLight5.position.z = Math.cos( time * 1.9 ) * 14;;
+                
+                if(clock % 10000 < 50 && clock % 1000 > 0){ 
+                    
+                    for ( var i = 0; i < 40; i ++ ) {
+                        var scaleY = Math.random() * 30
+                        var posZ1 = Math.random() * 60 - 30;
+                        bloc[i].position.y = scaleY/4;
+                        bloc[i].position.x = Math.random() * 50 - 25;
+                        bloc[i].position.z = posZ1;
+                        bloc[i].scale.x = Math.random() * 2 + 0.5;
+                        bloc[i].scale.y = scaleY;
+                        bloc[i].scale.z = Math.random() * 2 + 0.5;
+
+                        var scaleZ = Math.random() * 25;
+                        var scaleY2 = Math.random() * 10;
+                        var posX2 = Math.random() * 50 - 25;
+                        bloc2[i].position.y = 0;
+                        bloc2[i].position.x = posX2;
+                        bloc2[i].position.z = posZ1;
+                        bloc2[i].scale.x = Math.random() * 3 + 0.5;
+                        bloc2[i].scale.y = scaleY2/4;
+                        bloc2[i].scale.z = scaleZ;
+
+                        var scaleX = Math.random() * 25;
+                        var scaleY3 = Math.random() * 10;
+                        bloc3[i].position.y = 0;
+                        bloc3[i].position.x = posX2+scaleZ;
+                        bloc3[i].position.z = Math.random() * 60 - 30;
+                        bloc3[i].scale.x = scaleX;
+                        bloc3[i].scale.y = scaleY3/4;
+                        bloc3[i].scale.z = Math.random() * 3 + 0.5;
+                    }
+                }
 
 				renderer.render( scene, camera );
-
+                
 			}
                 
         </script>
